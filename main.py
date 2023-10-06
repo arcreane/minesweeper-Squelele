@@ -1,11 +1,23 @@
-import playground
+import os
+import time
+from start_game import start_game
+from playground import Playground
+from get_player_input import get_player_input
 
-print(45*"*")
-print(f"{'*':<44}*")
-print("* \t Welcome to this terminal Minesweeper\t*")
-print(f"{'*':<44}*")
-print(45*"*","\n")
+start_game()
+fieldWidth, fieldHeight, mines = get_player_input()
+os.system('cls')
+print("Game is gonna start.")
+print("3")
+time.sleep(1)
+print("2")
+time.sleep(1)
+print("1")
+time.sleep(1)
+os.system('cls')
 
-fieldWidth = input("Enter field width\n")
-fieldHeight = input("Enter field height\n")
-mines = input("How many mines ?\n")
+#appel du jeu et passage des caractéristique du jeu
+game = Playground(fieldWidth,fieldHeight,mines)
+game.play()
+
+
