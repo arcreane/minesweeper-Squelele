@@ -1,17 +1,18 @@
 import random
 import os
+from playsound import playsound
 
-#height=column=x
-#width=row=y
+#width=column=x
+#height=row=y
 #self.gridGame[int(y)][int(x)]
 
 class Playground:
-    def __init__(self, width, height, mines):
-        self.width = width
-        self.height = height
+    def __init__(self, column, row, mines):
+        self.column = column
+        self.row = row
         self.mines = mines
-        self.grid = [['0' for _ in range(width)] for _ in range(height)]
-        self.gridGame = [['࿖' for _ in range(width)] for _ in range(height)]
+        self.grid = [[0 for _ in range(row)] for _ in range(column)]
+        self.gridGame = [['࿖' for _ in range(row)] for _ in range(column)]
         self.place_mines()
 
     def place_mines(self):
@@ -31,19 +32,18 @@ class Playground:
                 y = input("enter ROW :")
                 if self.grid[int(y)][int(x)] == '*':
                     game_over = True
-                    print("BOMB!\n you have died. Not big surprise")
+                    print("BOMB!\n you are dead. Not big surprise")
+                    playsound('./sound.mp3')
+                    print('playing sound using playsound\n Game ended miserably')
                 else:
-                    self.gridGame[int(y)][int(x)] = ' '
-                    for r in range(0, self.width-1):
-                        for c in range(0, self.height-1):
-                            value = self.gridGame[r][c]
-                            if value == '*':
-                                self.updateValues(r, c)
+                    if self.gridGame[int(y)][int(x)] == '࿖':
+                        self.gridGame[int(y)][int(x)] = ' '
+                        self.updateValuesGrid(int(y), int(x))
+
             elif action.upper() == 'F':
                 x = input("Wich tile do you want to flag : \nenter COLUMN :")
                 y = input("enter ROW :")
-                self.gridGame[int(y)][int(x)] = ['⚐' for _ in y for _ in x]
-                #print(self.grid)
+                self.gridGame[int(y)][int(x)] = '⚐'
             else:
                 print("input error")
 
@@ -56,65 +56,69 @@ class Playground:
 
     def display_grid(self):
         # Code pour afficher la grille actuelle
-        for l in range(0, self.height):
-            print("  ",l, end=' ')
+        for l in range(0, self.row):
+            print(" ",l, end=' ')
         print()
-        for m in range(0, self.width-1):
+        for m in range(0, self.column):
             print(m, self.grid[m])
-        for n in range(0, self.height):
-            print("  ",n, end=' ')
+        for n in range(0, self.row):
+            print(" ",n, end=' ')
         print()
-        for o in range(0, self.height):
+        for o in range(0, self.row):
             print("  ",o, end=' ')
         print()
-        for p in range(0, self.width-1):
+        for p in range(0, self.column):
             print(p, self.gridGame[p])
-        for q in range(0, self.height):
+        for q in range(0, self.row):
             print("  ",q, end=' ')
         print()
         pass
     def placeBomb(self):
-        r = random.randint(0, (self.width-1))
-        c = random.randint(0, (self.height-1))
+        r = random.randint(0, (self.column-1))
+        c = random.randint(0, (self.row-1))
         #print(r)
         #print(len(self.grid))
         currentRow = self.grid[r]
         if not currentRow[c] == '*':
             currentRow[c] = '*'
+            self.updateValuesMines(r,c)
         else:
             self.placeBomb()
 
-    def updateValues(self, rn, c):
-        # Row above.
-        if rn - 1 > -1:
-            r = self.grid[rn - 1]
+    def updateValuesMines(self, rowNumber, columnNumber):
+        # Row above
+        if rowNumber - 1 > -1:
+            r = self.grid[rowNumber - 1]
+            if columnNumber - 1 > -1 and r[columnNumber - 1] != '*':
+                self.grid[rowNumber - 1][int(columnNumber - 1)] += 1
+            if r[columnNumber] != '*':
+                self.grid[rowNumber - 1][columnNumber] += 1
+            if 9 > columnNumber + 1 and r[columnNumber + 1] != '*':
+                self.grid[rowNumber - 1][columnNumber + 1] += 1
 
-            if c - 1 > -1:
-                if not r[c - 1] == '*':
-                    r[c - 1] += 1
-            if not r[c] == '*':
-                r[c] += 1
-            if 9 > c + 1:
-                if not r[c + 1] == '*':
-                    r[c + 1] += 1
-        # Same row.
-        r = self.grid[rn]
-        if c - 1 > -1:
-            if not r[c - 1] == '*':
-                r[c - 1] += 1
-        if 9 > c + 1:
-            if not r[c + 1] == '*':
-                r[c + 1] += 1
-        # Row below.
-        if 9 > rn + 1:
-            r = self.grid[rn + 1]
-            if c - 1 > -1:
-                if not r[c - 1] == '*':
-                    r[c - 1] += 1
-            if not r[c] == '*':
-                r[c] += 1
-            if 9 > c + 1:
-                if not r[c + 1] == '*':
-                    r[c + 1] += 1
+        # Same row
+        r = self.grid[rowNumber]
+        if columnNumber - 1 > -1 and r[columnNumber - 1] != '*':
+            self.grid[int(rowNumber)][columnNumber - 1] += 1
+        if 9 > columnNumber + 1 and r[columnNumber + 1] != '*':
+            self.grid[int(rowNumber)][columnNumber + 1] += 1
 
+        # Row below
+        if 9 > rowNumber + 1:
+            r = self.grid[rowNumber + 1]
+            if columnNumber - 1 > -1 and r[columnNumber - 1] != '*':
+                self.grid[rowNumber + 1][columnNumber - 1] += 1
+            if r[columnNumber] != '*':
+                self.grid[rowNumber + 1][columnNumber] += 1
+            if 9 > columnNumber + 1 and r[columnNumber + 1] != '*':
+                self.grid[rowNumber + 1][columnNumber + 1] += 1
 
+    def updateValuesGrid(self, row, column):
+        if self.gridGame[row][column] == ' ' or self.gridGame[row][column] == '࿖':
+            self.gridGame[row][column] = ' '
+            for dr in [-1, 0, 1]:
+                for dc in [-1, 0, 1]:
+                    if self.grid[row + dr][ column + dc] == '*':
+                        self.gridGame[row + dr][column + dc] = '࿖'
+                    else:
+                        self.gridGame[row + dr][column + dc] = self.grid[row + dr][column + dc]
