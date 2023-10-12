@@ -41,11 +41,14 @@ class Playground:
                     if self.gridGame[int(y)][int(x)] == '࿖':
                         self.gridGame[int(y)][int(x)] = ' '
                         self.updateValuesGrid(int(y), int(x))
-
             elif action.upper() == 'F':
                 x = input("Wich tile do you want to flag : \nenter COLUMN :")
                 y = input("enter ROW :")
                 self.gridGame[int(y)][int(x)] = '⚐'
+            elif action.upper() == 'S':
+                self.display_gridSolution()
+                x = 0
+                y = 0
             else:
                 print("input error")
 
@@ -66,22 +69,6 @@ class Playground:
             pass
 
     def display_grid(self):
-        # Code pour afficher la SOLUTION
-        # Affichez l'en-tête des colonnes (numéro de colonne)
-        print("   ", end='')
-        for j in range(self.row):
-            print(f"{j:2}", end=' ')
-        print()  # Nouvelle ligne
-
-        for o in range(self.column):
-            # Affichez le numéro de ligne
-            print(f"{o:2} ", end='')
-
-            # Affichez le contenu de chaque case
-            for p in range(self.row):
-                cell_content = self.grid[o][p]
-                print(f"{cell_content:2}", end=' ')
-            print()  # Nouvelle ligne
         # Affichez l'en-tête des colonnes (numéro de colonne)
         print("   ", end='')
         for l in range(self.row):
@@ -95,6 +82,24 @@ class Playground:
             # Affichez le contenu de chaque case
             for n in range(self.row):
                 cell_content = self.gridGame[m][n]
+                print(f"{cell_content:2}", end=' ')
+            print()  # Nouvelle ligne
+        pass
+
+    def display_gridSolution(self):
+        # Code pour afficher la SOLUTION
+        print("   ", end='')
+        for j in range(self.row):
+            print(f"{j:2}", end=' ')
+        print()  # Nouvelle ligne
+
+        for o in range(self.column):
+            # Affichez le numéro de ligne
+            print(f"{o:2} ", end='')
+
+            # Affichez le contenu de chaque case
+            for p in range(self.row):
+                cell_content = self.grid[o][p]
                 print(f"{cell_content:2}", end=' ')
             print()  # Nouvelle ligne
         pass
