@@ -7,3 +7,10 @@ def get_player_input():
         print("Too much!")
         mines = int(input("How many mines ?\n"))
     return fieldColumn, fieldRow, mines
+def get_player_input_action():
+   return input("Do you want to uncover a tile (U) or flag a mine (F)\n")
+
+def get_player_input_gridXY():
+    x = input("enter COLUMN :")
+    y = input("enter ROW :")
+    return x,y

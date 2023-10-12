@@ -1,6 +1,9 @@
 import random
 import os
+import time
 from playsound import playsound
+from get_player_input import get_player_input_action
+from get_player_input import get_player_input_gridXY
 
 #width=column=x
 #height=row=y
@@ -8,6 +11,7 @@ from playsound import playsound
 
 class Playground:
     def __init__(self, column, row, mines):
+        self.start_time = time.time()
         self.column = column
         self.row = row
         self.mines = mines
@@ -27,10 +31,10 @@ class Playground:
         while not game_over:
             self.display_grid()
             # Code pour gérer les entrées du joueur et mettre à jour la grille
-            action = input("Do you want to uncover a tile (U) or flag a mine (F)\n")
+            action = get_player_input_action()
             if action.upper() == 'U':
-                x = input("Wich tile do you want to uncover : \nenter COLUMN :")
-                y = input("enter ROW :")
+                print("Wich tile do you want to uncover :")
+                x,y = get_player_input_gridXY()
                 if self.grid[int(y)][int(x)] == '*':
                     game_over = True
                     print("BOMB!\n you are dead. Not big surprise")
@@ -42,8 +46,8 @@ class Playground:
                         self.gridGame[int(y)][int(x)] = ' '
                         self.updateValuesGrid(int(y), int(x))
             elif action.upper() == 'F':
-                x = input("Wich tile do you want to flag : \nenter COLUMN :")
-                y = input("enter ROW :")
+                print("Wich tile do you want to flag :")
+                x, y = get_player_input_gridXY()
                 self.gridGame[int(y)][int(x)] = '⚐'
             elif action.upper() == 'S':
                 self.display_gridSolution()
@@ -57,6 +61,8 @@ class Playground:
 
             if flags_correct == self.mines:
                 game_over = True
+                elapsed = self.elapsed_time()
+                print(f"Temps écoulé : {elapsed} secondes")
                 print("Victory!\n you played well. Nice job")
                 playsound('./vsound.mp3')
                 print('playing sound using playsound')
@@ -158,6 +164,10 @@ class Playground:
                                         if self.grid[row + dr + dr2][column + dc + dc2] != '*':  # tant que c'est une mine on laisse caché
                                             self.gridGame[row + dr + dr2][column + dc + dc2] = self.grid[row + dr + dr2][column + dc + dc2]
 
-
-
-
+    def elapsed_time(self):
+        if self.start_time is not None:
+            current_time = time.time()
+            elapsed = current_time - self.start_time
+            return round(elapsed, 2)  # Arrondir le temps à deux décimales
+        else:
+            return 0  # Le jeu n'a pas encore commencé
