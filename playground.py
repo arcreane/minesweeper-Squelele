@@ -11,6 +11,7 @@ from get_player_input import get_player_input_gridXY
 
 class Playground:
     def __init__(self, column, row, mines):
+        # initialisation de la grid et du placement des mines
         self.start_time = time.time()
         self.column = column
         self.row = row
@@ -26,12 +27,14 @@ class Playground:
         pass
 
     def play(self):
+        # Le jeu se lance
         game_over = False
         flags_correct = 0
         while not game_over:
             self.display_grid()
             # Code pour gérer les entrées du joueur et mettre à jour la grille
             action = get_player_input_action()
+            # U: selectionne un case à afficher, F: dépos d'un drapeau et S: affiche la solution(tricheur!!!)
             if action.upper() == 'U':
                 print("Wich tile do you want to uncover :")
                 x,y = get_player_input_gridXY()
@@ -40,7 +43,6 @@ class Playground:
                     print("BOMB!\n you are dead. Not big surprise")
                     playsound('./sound.mp3')
                     print('playing sound using playsound\n Game ended miserably')
-
                 else:
                     if self.gridGame[int(y)][int(x)] == '࿖':
                         self.gridGame[int(y)][int(x)] = ' '
@@ -60,9 +62,8 @@ class Playground:
                 flags_correct += 1
 
             if flags_correct == self.mines:
+                # gestion victoire
                 game_over = True
-                elapsed = self.elapsed_time()
-                print(f"Temps écoulé : {elapsed} secondes")
                 print("Victory!\n you played well. Nice job")
                 playsound('./vsound.mp3')
                 print('playing sound using playsound')
@@ -70,6 +71,8 @@ class Playground:
 
             # Vérifier les conditions de victoire ou de défaite
             if game_over == True:
+                elapsed = self.elapsed_time()
+                print(f"Temps écoulé : {elapsed} secondes")
                 exit()
             os.system('cls')
             pass
